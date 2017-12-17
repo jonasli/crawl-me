@@ -1,5 +1,5 @@
-from utils import *
-from ..sysconf import *
+from crawl_me.common.utils import *
+from crawl_me.sysconf import *
 
 
 class RangeDownloadThread(threading.Thread):
@@ -52,6 +52,7 @@ class RangeDownloader(object):
         self.lock = threading.Lock()
 
     def rangeDownload(self, url, savePath, partNum=RANGE_PART_NUM):
+        syslog('rangeDownload start for :' + savePath)
         self.savePath = savePath
         self.url = url
         fileSize = self.__getFileSize(url)

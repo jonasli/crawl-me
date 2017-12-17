@@ -9,5 +9,6 @@ RANGE_PART_NUM = 5
 
 AVAILABLE_MODULES = [
     "gamersky",
-    "pixiv"
+    "pixiv",
+    "ffft"
 ]

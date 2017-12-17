@@ -5,7 +5,7 @@ import threading
 import urllib2
 import cookielib
 import copy
-from ..sysconf import *
+from crawl_me.sysconf import *
 
 
 def urlopenWithRetry(opener, request, timeout=URL_OPEN_TIMEOUT, retryTime=URL_OPEN_RETRY_TIME):

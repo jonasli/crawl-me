@@ -83,6 +83,8 @@ Usage
 1. Download 10 pages pictures at the url of http://www.gamersky.com/ent/201404/352055.shtml in gamersky site, and store the pictures into local direcotry.
 
         crawl-me gamersky http://www.gamersky.com/ent/201404/352055.shtml ./gamersky-crawl 1 10
+        crawl-me ffft http://www.5442.com/meinv/20160324/30633.html ./ffft 1 10
+        crawl-me mm131 http://www.mm131.com/xinggan/  ./mm131 1 10
 
 2. Download all the paintings of 藤原(Fujiwara, Pixiv ID=27517), and store them into local directory. 
         

@@ -1,9 +1,11 @@
 import time
 
 from rangedownloader import RangeDownloader
-from utils import *
-from ..sysconf import *
-
+from crawl_me.common.utils import *
+from crawl_me.sysconf import *
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class PictureThread(threading.Thread):
     def __init__(self,
@@ -32,23 +34,36 @@ class PictureThread(threading.Thread):
         if maxIndex > pictureSize:
             maxIndex = pictureSize
 
+        urls = list()
+        for key in self.urlList.keys():
+            urls.append(key)
+
         for index in range(self.startIndex - 1, maxIndex):
             self.downloadLock.acquire()
-            self.__crawl(self.urlList[index], index)
+            self.__crawl(urls[index], self.urlList[urls[index]], index)
             self.downloadLock.release()
 
-    def __crawl(self, url, picIndex):
+    def __crawl(self, url,name, picIndex):
         syslog("downloading " + url, LOG_INFO)
-        savePath = self.savePath + str(picIndex) + '.jpg'
+        #savePath = self.savePath+ name+'/' + str(picIndex) + '.jpg'
+        filePath = os.path.join(self.savePath, name, os.path.basename(url))
+        folderPath = os.path.join(self.savePath, name)
+        if os.path.exists(os.path.basename(filePath)):
+            syslog("error! the resource processed before, url=%s" % (url), LOG_ERROR)
+            return
+
+        syslog('filePath =' + filePath)
+        syslog('folderPath = ' + folderPath)
+        createDir(folderPath)
         if self.useRangeHeaders:
             rd = RangeDownloader(self.opener)
-            rd.rangeDownload(url, savePath)
+            rd.rangeDownload(url, filePath)
         else:
             content = urlReadWithRetry(self.opener, url)
             if content == None:
                 syslog("error! retry too many times, url=%s" % (url), LOG_ERROR)
                 return
-            file = open(savePath, "wb")
+            file = open(filePath, "wb")
             file.write(content)
             file.close()
 
@@ -60,7 +75,7 @@ class CrawlerManager(object):
         self.opener = opener
         self.urlList = urlList
         self.downloadLock = threading.Semaphore(maxDownloadCount)
-        createDir(self.savePath)
+        #createDir(self.savePath)
 
     def startCrawl(self):
         beginTime = time.time()
@@ -72,7 +87,12 @@ class CrawlerManager(object):
 
         #check http range header support
         syslog("check server http range header support......", LOG_INFO)
-        useRangeHeaders = checkRangeHeaderSupport(self.opener, self.urlList[0])
+
+        for key in self.urlList.keys():
+            url=key
+            break
+
+        useRangeHeaders = checkRangeHeaderSupport(self.opener, url)
         if useRangeHeaders == None:
             return
         elif useRangeHeaders == True:

@@ -1,9 +1,9 @@
 import argparse
 
-from utils import *
-from crawlercore import CrawlerManager
-from ..sysconf import *
-from ..__projconf__ import *
+from crawl_me.common.utils import *
+from crawl_me.common.crawlercore import CrawlerManager
+from crawl_me.sysconf import *
+from crawl_me.__projconf__ import *
 
 
 def printHelp(parser):
@@ -52,3 +52,6 @@ def main():
     syslog("total pictures to crawl:%s" % (len(urlList)))
     manager = CrawlerManager(opener, urlList, conf["savePath"])
     manager.startCrawl()
+
+if __name__ == "__main__":
+    main()
